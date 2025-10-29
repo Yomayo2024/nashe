@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Калькуляції</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Верхня панель */
+    header {
+      background-color: #222;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #searchBox {
+      padding: 6px 10px;
+      border-radius: 5px;
+      border: none;
+      width: 200px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Вкладки */
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #333;
+    }
+
+    nav button {
+      background-color: #333;
+      color: white;
+      padding: 14px 20px;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+
+    nav button:hover {
+      background-color: #575757;
+    }
+
+    nav button.active {
+      background-color: #4CAF50;
+    }
+
+    /* Контент розділів */
+    .section {
+      display: none;
+      padding: 20px;
+    }
+
+    .active-section {
+      display: block;
+    }
+
+    .calc-item {
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .calc-item img {
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-right: 15px;
+    }
+
+    .highlight {
+      background-color: yellow;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Калькуляції</h1>
+    <input type="text" id="searchBox" placeholder="Пошук...">
+    <button onclick="findText()">🔍</button>
+  </header>
+
+  <nav>
+    <button class="tab active" onclick="showSection('hot')">Гарячий процес</button>
+    <button class="tab" onclick="showSection('cold')">Холодний процес</button>
+    <button class="tab" onclick="showSection('sauce')">Соуса</button>
+    <button class="tab" onclick="showSection('grill')">Гриль</button>
+  </nav>
+
+  <main>
+    <!-- Гарячий процес -->
+    <section id="hot" class="section active-section">
+      <div class="calc-item">
+        <img src="https://via.placeholder.com/120x80?text=Суп" alt="Суп">
+        <div><b>Борщ</b><br>Вода – 1л, м’ясо – 200г, буряк – 100г</div>
+      </div>
+    </section>
+
+    <!-- Холодний процес -->
+    <section id="cold" class="section">
+      <div class="calc-item">
+        <img src="https://via.placeholder.com/120x80?text=Салат" alt="Салат">
+        <div><b>Салат Банановий</b><br>Банан – 1шт, йогурт – 100г, горіхи – 30г</div>
+      </div>
+    </section>
+
+    <!-- Соуса -->
+    <section id="sauce" class="section">
+      <div class="calc-item">
+        <img src="https://via.placeholder.com/120x80?text=Соус" alt="Соус">
+        <div><b>Соус часниковий</b><br>Майонез – 200г, часник – 10г</div>
+      </div>
+      <div class="calc-item">
+        <img src="https://via.placeholder.com/120x80?text=Соус" alt="Соус">
+        <div><b>Соус </b><br>Майонез – 200г, часник – 10г</div>
+      </div>
+    </section>
+
+
+    <!-- Гриль -->
+    <section id="grill" class="section">
+      <div class="calc-item">
+        <img src="https://via.placeholder.com/120x80?text=Стейк" alt="Стейк">
+        <div><b>Стейк</b><br>М’ясо – 250г, спеції – 10г</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+      document.getElementById(id).classList.add('active-section');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.querySelector(`nav button[onclick="showSection('${id}')"]`).classList.add('active');
+    }
+
+    function findText() {
+      const searchText = document.getElementById("searchBox").value.toLowerCase();
+      if (searchText === "") return;
+
+      let found = false;
+      document.querySelectorAll('.section').forEach(section => {
+        section.querySelectorAll('.calc-item').forEach(item => {
+          const text = item.innerText.toLowerCase();
+          item.innerHTML = item.innerHTML.replace(/<span class="highlight">|<\/span>/g, ''); // прибрати старі підсвічування
+          if (text.includes(searchText)) {
+            found = true;
+            // Активуємо розділ
+            showSection(section.id);
+            // Підсвічуємо
+            const regex = new RegExp(`(${searchText})`, 'gi');
+            item.innerHTML = item.innerHTML.replace(regex, '<span class="highlight">$1</span>');
+            item.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        });
+      });
+
+      if (!found) alert("Слово не знайдено!");
+    }
+  </script>
+
+</body>
+</html>
